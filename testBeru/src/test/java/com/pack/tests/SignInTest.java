@@ -15,16 +15,14 @@ public class SignInTest extends BaseTest {
 	public void validSignIn(String userLogin, String userPassword) {
 				
 		HomePage homePage = new HomePage(driver, wait);
-		homePage.cancelWindow();
+		homePage.closeWindow();
 		
 		SignInPage signInPage = homePage.signInClick();
 		signInPage.signIn(userLogin, userPassword);
-		String text = homePage.getUserBtnText().trim();
-		Assert.assertEquals("Sign in button text doesn't correct: " + text, "Мой профиль", text);
-		text = homePage.getUserLogin().trim();
-		System.out.println(text);
-		Assert.assertEquals("User login doesn't correct", userLogin, text);
 		
+		String text = homePage.getUserBtnText().trim();
+		Assert.assertEquals("Text of sign in button doesn't correct", "Мой профиль", text);
+		text = homePage.getUserLogin().trim();
+		Assert.assertEquals("User login doesn't correct", userLogin, text);	
 	}
-	
 }

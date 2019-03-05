@@ -39,8 +39,8 @@ public class Page {
 		driver.findElement(elementBy).click();
 	}
 	
-	public void scrollToElement(WebElement element) {
+	public void scrollToElement(By element) {
 		((JavascriptExecutor) driver).executeScript(
-            "arguments[0].scrollIntoView();", element);
+            "arguments[0].scrollIntoView();", driver.findElement(element));
 	}
 }

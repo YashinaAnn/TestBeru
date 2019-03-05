@@ -1,10 +1,12 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
   <suite name="Beru.ru tests">
 	<test name="First Test">
+	<parameter name="city" value="Хвалынск" />
 	<parameter name="userLogin" value="testBeruRu@yandex.ru" />
 	<parameter name="userPassword" value="kulikandlake" />
 	  <classes> 
 		<class name="com.pack.tests.SignInTest"/> 
+		<class name="com.pack.tests.NewCityTest"/> 
 	  </classes>
 	</test>
   </suite>
