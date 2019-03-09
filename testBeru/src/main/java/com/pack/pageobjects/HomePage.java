@@ -13,7 +13,6 @@ public class HomePage extends Page {
 	// Authorization locators
 	private By signInBtn = By.cssSelector("div.header2-nav__user");
 	private By loginBy = By.cssSelector("div.header2-user-menu__email");	
-	private By cancelBy = By.xpath("//div[@class='modal__cell']/div/div");
 	
 	// Change city locators
 	private By newCityLink = By.xpath("//span[text()='Регион: ']//span[@class='link__inner']");	
@@ -28,10 +27,6 @@ public class HomePage extends Page {
 		super(driver, wait);
 	}
 	
-	// Close window.
-	public void closeWindow() {
-		click(cancelBy);
-	}
 
 	// Click on sign in button.
 	public SignInPage signInClick() {

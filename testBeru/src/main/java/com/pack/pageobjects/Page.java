@@ -12,9 +12,15 @@ public class Page {
 	public WebDriver driver;
 	public WebDriverWait wait;
 	
+	private By cancelBy = By.xpath("//div[@class='modal__cell']/div/div");
+	
 	public Page(WebDriver driver, WebDriverWait wait) {
 		this.driver = driver;
 		this.wait = wait;
+	}
+	
+	public void closeWindow() {
+		click(cancelBy);
 	}
 
 	public String getText(By elementBy) {
@@ -42,5 +48,10 @@ public class Page {
 	public void scrollToElement(By element) {
 		((JavascriptExecutor) driver).executeScript(
             "arguments[0].scrollIntoView();", driver.findElement(element));
+	}
+	
+	public void scrollToElement(WebElement element) {
+		((JavascriptExecutor) driver).executeScript(
+            "arguments[0].scrollIntoView();", element);
 	}
 }
