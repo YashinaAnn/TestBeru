@@ -19,9 +19,10 @@ public class ProductPage extends Page {
 	private By priceBy = By.xpath("//span[text()='Итого']/following-sibling::span");
 	// Discount 
 	private By discountBy = By.xpath("//span[contains(text(),'Скидка')]/following-sibling::span");
-	
+	// Products count in basket
+	private By countBy = By.cssSelector("input[type='phone']");
+	// Product price with discount
 	private double productPrice;
-	
 	
 	public ProductPage(WebDriver driver, WebDriverWait wait){
 		super(driver, wait);
@@ -43,17 +44,16 @@ public class ProductPage extends Page {
 		double product = getPrice(productPriceBy);
 		System.out.println("Product price: " + product);
 		double discount = 0;
+		
 		try {
 			discount = getPrice(discountBy);
 		} catch(Exception exp) {}	
 		
-		System.out.println("Discount: " + discount);
 		productPrice = product - discount;
 		return (price == (delivery + productPrice));
 	}
 	
-	public void addProduct(double price) {
-		System.out.println("Add product...");
+	public boolean addProduct(double price) {
 		WebElement addBtn = driver.findElement(addMoreBy); 	
 		
 		int count = (int) Math.ceil((price - getPrice(priceBy)) / productPrice);
@@ -61,10 +61,12 @@ public class ProductPage extends Page {
 			wait.until(ExpectedConditions.elementToBeClickable(addMoreBy));
 			addBtn.click();
 		}	
+	
+		driver.navigate().refresh();
+		return ((count + 1) == Integer.parseInt(getValue(countBy)));
 	}
-		
+	
 	public double freeDelivery() {
-		System.out.println("Free delivery...");
 		if (this.getText(deliveryPriceBy).contains("бесплатно"))
 			return 0;
 		return getPrice(freeDeliveryBy);	
