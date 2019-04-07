@@ -7,6 +7,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.pack.utils.HighlightElement;
+
 public class Page {
 	
 	public WebDriver driver;
@@ -20,38 +22,75 @@ public class Page {
 	}
 	
 	public void closeWindow() {
-		click(cancelBy);
+		try {
+			click(cancelBy);
+		} catch(Exception e) {
+			System.out.println("Window did not appear");
+		}
 	}
-
+	
+	public WebElement findAndHighLight(By elementBy) {
+		WebElement element = driver.findElement(elementBy);
+		HighlightElement.highLight(element, driver);
+		return element;
+	}
+	
+	public String getText(WebElement element) {
+		wait.until(ExpectedConditions.visibilityOf(element));
+		HighlightElement.highLight(element, driver);
+		return element.getText();
+	}
+	
 	public String getText(By elementBy) {
 		wait.until(ExpectedConditions.visibilityOfElementLocated(elementBy));
-		return driver.findElement(elementBy).getText();
+		return getText(driver.findElement(elementBy));
+	}
+	
+	public void enterText(WebElement element, String text) {
+		wait.until(ExpectedConditions.visibilityOf(element));
+	    element.clear();
+	    element.sendKeys(text);
+		HighlightElement.highLight(element, driver);     
 	}
 	
 	public void enterText(By elementBy, String text) {
 		wait.until(ExpectedConditions.visibilityOfElementLocated(elementBy));
-	    WebElement element = driver.findElement(elementBy);
-	    element.clear();
-	    element.sendKeys(text);
+	    enterText(driver.findElement(elementBy), text);
 	}
 	
-	public String getValue(By elementBy) {
-		wait.until(ExpectedConditions.visibilityOfElementLocated(elementBy));
-		return driver.findElement(elementBy).getAttribute("value");
+	public void click(WebElement element) {
+		wait.until(ExpectedConditions.elementToBeClickable(element));
+		HighlightElement.highLight(element, driver);
+		element.click();
 	}
 	
 	public void click(By elementBy) {
-		wait.until(ExpectedConditions.elementToBeClickable(elementBy));
-		driver.findElement(elementBy).click();
+		wait.until(ExpectedConditions.visibilityOfElementLocated(elementBy));
+		click(driver.findElement(elementBy));
 	}
 	
-	public void scrollToElement(By element) {
-		((JavascriptExecutor) driver).executeScript(
-            "arguments[0].scrollIntoView();", driver.findElement(element));
+	public void submit(WebElement element) {
+		wait.until(ExpectedConditions.elementToBeClickable(element));
+		HighlightElement.highLight(element, driver);
+		element.submit();
+	}
+	
+	public void submit(By elementBy) {
+		wait.until(ExpectedConditions.visibilityOfElementLocated(elementBy));
+		submit(driver.findElement(elementBy));
 	}
 	
 	public void scrollToElement(WebElement element) {
 		((JavascriptExecutor) driver).executeScript(
             "arguments[0].scrollIntoView();", element);
+	}
+	
+	public void scrollToElement(By elementBy) {
+		wait.until(ExpectedConditions.visibilityOfElementLocated(elementBy));
+		scrollToElement(driver.findElement(elementBy));
+	}
+
+	public WebDriver getDriver() {
+		return driver;
 	}
 }
