@@ -1,5 +1,7 @@
 package com.pack.pageobjects;
 
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -9,7 +11,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 public class ProductPage extends Page {
 	
 	private By addMoreBy = By.xpath("//span[text()='+']");
-	// span "до бесплатной доставки осталось"
+	// span "до бесплатной доставки осталось..."
 	private By freeDeliveryBy = By.cssSelector("span.voCFmXKfcL");
 	// Product price
 	private By productPriceBy = By.xpath("//span[contains(text(),'Товары')]/following-sibling::span");
@@ -19,57 +21,57 @@ public class ProductPage extends Page {
 	private By priceBy = By.xpath("//span[text()='Итого']/following-sibling::span");
 	// Discount 
 	private By discountBy = By.xpath("//span[contains(text(),'Скидка')]/following-sibling::span");
-	// Products count in basket
-	private By countBy = By.cssSelector("input[type='phone']");
-	// Product price with discount
+	// Count of products in basket.
+	private By inBasketBy = By.xpath("//div[contains(text(), 'В корзине ')]");
+	// Loader
+	private By loaderBy = By.className("A2ZAPkIo1a");
+	
+	
+	// Product price with discount.
 	private double productPrice;
+	// Total product price with delivery.
+	private double totalPrice;
 	
 	public ProductPage(WebDriver driver, WebDriverWait wait){
 		super(driver, wait);
 	}	
 	
-	public double getPrice(By element) {		
-		String price = this.getText(element).replaceAll("[^0-9]", "");
-		if (price.isEmpty()) {
-			return 0;
-		}
-		return Double.parseDouble(price);
-	}
-	
 	public boolean correctPrice() {	
-		double price = getPrice(priceBy);
-		System.out.println("Price: " + price);
-		double delivery = getPrice(deliveryPriceBy);
-		System.out.println("Delivery price: " + delivery);
-		double product = getPrice(productPriceBy);
-		System.out.println("Product price: " + product);
-		double discount = 0;
-		
-		try {
-			discount = getPrice(discountBy);
-		} catch(Exception exp) {}	
-		
-		productPrice = product - discount;
-		return (price == (delivery + productPrice));
+		// Product price.
+		productPrice = getNumber(productPriceBy);
+		System.out.println(String.format("Product price: %s", productPrice));
+		// Delivery price.
+		double delivery = getNumber(deliveryPriceBy);
+		System.out.println(String.format("Delivery price: %s", delivery));	
+		// Discount.
+		List<WebElement> discount = driver.findElements(discountBy);
+		if (!discount.isEmpty()) {
+			double disc = getNumber(discount.get(0));
+			productPrice -= disc;
+			System.out.println(String.format("Discount: %s", disc));	
+		}		
+		// Total price.
+		totalPrice = getNumber(priceBy);
+		System.out.println(String.format("Total price: %s", totalPrice));		
+		return (totalPrice == (delivery + productPrice));
 	}
 	
-	public boolean addProduct(double price) {
-		WebElement addBtn = driver.findElement(addMoreBy); 	
-		
-		int count = (int) Math.ceil((price - getPrice(priceBy)) / productPrice);
+	public boolean addProduct(int price) {
+		WebElement addBtn = find(addMoreBy); 		
+		int count = (int) Math.ceil((price - totalPrice) / productPrice);
 		for (int i = 0; i < count; i++) {
-			wait.until(ExpectedConditions.elementToBeClickable(addMoreBy));
-			addBtn.click();
-		}	
-	
-		driver.navigate().refresh();
-		return ((count + 1) == Integer.parseInt(getValue(countBy)));
+			click(addBtn);
+		}			
+		wait.until(ExpectedConditions.visibilityOfElementLocated(loaderBy));
+		wait.until(ExpectedConditions.invisibilityOfElementLocated(loaderBy));	
+		return (count + 1) == getNumber(inBasketBy);
 	}
 	
-	public double freeDelivery() {
-		if (this.getText(deliveryPriceBy).contains("бесплатно"))
-			return 0;
-		return getPrice(freeDeliveryBy);	
+	public boolean isFreeDelivery() {
+		return getText(deliveryPriceBy).contains("бесплатно");	
 	}
 	
+	public int beforeFreeDelivery() {
+		return getNumber(freeDeliveryBy);	
+	}
 }
