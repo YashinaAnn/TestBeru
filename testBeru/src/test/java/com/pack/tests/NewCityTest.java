@@ -16,9 +16,10 @@ public class NewCityTest extends BaseTest {
 	
 	@DataProvider(name = "city-data-provider")
 	public Object[][] dataProviderMethod() {
-		return new Object[][] { { "Хвалынск", login, password }, 
-								{ "Самара", login, password }, 
-								{ "Волгоград", login, password} };
+		return new Object[][] { 
+			{ "Хвалынск", login, password }, 
+			{ "Самара", login, password }, 
+			{ "Волгоград", login, password} };
 	}
 	
 	@Test(dataProvider = "city-data-provider", dependsOnGroups= {"signInTest"})
