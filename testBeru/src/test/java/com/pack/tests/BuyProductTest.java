@@ -10,32 +10,33 @@ import io.qameta.allure.Step;
 import junit.framework.Assert;
 
 public class BuyProductTest extends BaseTest {
-	
 	@Test
 	@Parameters({"product", "minPrice", "maxPrice", "price"})
-	public void buyProduct(String product, String minPrice, 
-						   String maxPrice, double price) {
+	public void buyProductTest(String product, int minPrice, 
+			int maxPrice, int price) {
 				
 		SearchPage searchPage = new SearchPage(driver, wait);
 		searchPage.closeWindow();
 		
-		isPricesMatch(searchPage, product, minPrice, maxPrice);
+		checkPrices(searchPage, product, minPrice, maxPrice);
 		buyProduct(searchPage);
 				
 		ProductPage productPage = new ProductPage(driver, wait);
-		isCorrectPrice(productPage);	
-		
+		checkProductPrice(productPage);	
+
+		System.out.println(String.format("Before free delivery: %s", 
+				productPage.beforeFreeDelivery()));	
 		boolean isEnough = productPage.addProduct(price);
 		driver.navigate().refresh();	
 		if (isEnough) {
 			isFreeDelivery(productPage);
 		}
-		isCorrectPrice(productPage);
+		checkProductPrice(productPage);
 	}
 	
 	@Step
-	public void isPricesMatch(SearchPage searchPage, String product, 
-							  String minPrice, String maxPrice) {
+	public void checkPrices(SearchPage searchPage, String product, 
+			int minPrice, int maxPrice) {
 		searchPage.searchProduct(product);
 		searchPage.setMinPrice(minPrice);
 		searchPage.setMaxPrice(maxPrice);
@@ -48,8 +49,7 @@ public class BuyProductTest extends BaseTest {
 	}
 	
 	@Step
-	public void isCorrectPrice(ProductPage productPage) {
-		System.out.println(productPage.freeDelivery());
+	public void checkProductPrice(ProductPage productPage) {
 		Assert.assertTrue("The total price is not equal to the sum of " 
 		                  + "the delivery price and product price", 
 		                  productPage.correctPrice());
@@ -57,9 +57,8 @@ public class BuyProductTest extends BaseTest {
 	
 	@Step
 	public void isFreeDelivery(ProductPage productPage){
-		Assert.assertEquals("Delivery is not free", 
-							0.0, 
-						    productPage.freeDelivery());
+		Assert.assertTrue("Delivery is not free", 
+				productPage.isFreeDelivery());
 	}
 }
 
