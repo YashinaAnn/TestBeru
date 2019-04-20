@@ -1,5 +1,7 @@
 package com.pack.pageobjects;
 
+import java.util.ArrayList;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -13,7 +15,7 @@ public class HomePage extends Page {
 	// Authorization locators
 	private By signInBtn = By.cssSelector("div.header2-nav__user");
 	private By loginBy = By.cssSelector("div.header2-user-menu__email");	
-	
+	private By logoutBy = By.xpath("//a[text()='Выход']");
 	// Change city locators
 	private By newCityLink = By.xpath("//span[text()='Регион: ']//span[@class='link__inner']");	
 	// New city form
@@ -21,17 +23,22 @@ public class HomePage extends Page {
 	private By submitCityBy = By.cssSelector("form.region-select-form button");
 	private By cityListBy = By.className("region-suggest__list-item");
 	// Settings 
-	private By settingsBy = By.className("header2-user-menu__item_type_settings");
+	private By settingsBy = By.xpath("//a[text()='Настройки']");
 
 	public HomePage(WebDriver driver, WebDriverWait wait) {
 		super(driver, wait);
 	}
 	
-
 	// Click on sign in button.
-	public SignInPage signInClick() {
+	public SignInPage goToSignIn() {
 		click(signInBtn);
 		return new SignInPage(driver, wait);  
+	}
+	
+	public void logout() {
+		Actions action = new Actions(driver);
+		action.moveToElement(findAndHighLight(signInBtn)).perform();
+		click(logoutBy);
 	}
 	
 	// Get text of sign in button.
@@ -42,34 +49,35 @@ public class HomePage extends Page {
 	// Get user login after authorization.
 	public String getUserLogin() {
 		Actions action = new Actions(driver);
-		action.moveToElement(driver.findElement(signInBtn)).perform();
-		return this.getText(loginBy);
+		action.moveToElement(findAndHighLight(signInBtn)).perform();
+		return getText(loginBy);
 	}
 	
 	// Change city.
 	public void changeCity(String city) {
-		this.click(newCityLink);		
-		WebElement element = driver.findElement(inputCityBy);
-		element.sendKeys(city);
+		click(newCityLink);		
+		WebElement element = find(inputCityBy);
+		enterText(element, city);
+		
 		wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(cityListBy));
 		element.sendKeys(Keys.ARROW_DOWN, Keys.ENTER);
-		driver.findElement(submitCityBy).submit();
+		submit(submitCityBy);
 		wait.until(ExpectedConditions.invisibilityOf(element));
 	}
 	
 	// Go to settings page
 	public SettingsPage changeSettings() {
-		wait.until(ExpectedConditions.visibilityOfElementLocated(signInBtn));
 		Actions action = new Actions(driver);
-		action.moveToElement(driver.findElement(signInBtn)).perform();	
-		click(settingsBy);
+		action.moveToElement(findAndHighLight(signInBtn)).perform();	
+		click(settingsBy);	
 		
+		ArrayList<String> windows = new ArrayList<String> (driver.getWindowHandles());
+		driver.switchTo().window(windows.get(1));
 		return new SettingsPage(driver, wait);
 	}
 
 	// Get current city.
 	public String getCity() {
-		return this.getText(newCityLink);
+		return getText(newCityLink);
 	}
-	
 }
