@@ -11,24 +11,26 @@ import junit.framework.Assert;
 
 public class SignInTest extends BaseTest {
 	
-	@Test
+	private final String BUTTON_TEXT = "Мой профиль";
+	
+	@Test(groups = {"signInTest"})
 	@Parameters({"userLogin", "userPassword"})
-	public void validSignIn(String userLogin, String userPassword) {
-				
+	public void signInTest(String userLogin, String userPassword) {			
 		HomePage homePage = new HomePage(driver, wait);
-		homePage.closeWindow();
+		homePage.closeWindow();	
 		
-		SignInPage signInPage = homePage.signInClick();
-		signInPage.signIn(userLogin, userPassword);
+		SignInPage signInPage = homePage.goToSignIn();
+		signInPage.signIn(userLogin, userPassword);	
 		
 		checkButtonText(homePage);
-		checkLoginText(homePage, userLogin);
+		checkLoginText(homePage, userLogin);	
+		homePage.logout();
 	}
 	
 	@Step
 	public void checkButtonText(HomePage homePage) {
 		Assert.assertEquals("Text of sign in button doesn't correct", 
-							"Мой профиль", 
+							BUTTON_TEXT, 
 							homePage.getUserBtnText().trim());
 	}
 	
