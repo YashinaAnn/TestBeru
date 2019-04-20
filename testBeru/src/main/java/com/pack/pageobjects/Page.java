@@ -11,14 +11,22 @@ import com.pack.utils.HighlightElement;
 
 public class Page {
 	
-	public WebDriver driver;
-	public WebDriverWait wait;
+	protected WebDriver driver;
+	protected WebDriverWait wait;
 	
 	private By cancelBy = By.xpath("//div[@class='modal__cell']/div/div");
 	
 	public Page(WebDriver driver, WebDriverWait wait) {
 		this.driver = driver;
 		this.wait = wait;
+	}
+	
+	public WebDriver getDriver() {
+		return driver;
+	}
+	
+	public WebDriverWait getWait() {
+		return wait;
 	}
 	
 	public void closeWindow() {
@@ -29,8 +37,13 @@ public class Page {
 		}
 	}
 	
+	public WebElement find(By element) {
+		wait.until(ExpectedConditions.visibilityOfElementLocated(element));
+		return driver.findElement(element);
+	}
+	
 	public WebElement findAndHighLight(By elementBy) {
-		WebElement element = driver.findElement(elementBy);
+		WebElement element = find(elementBy);
 		HighlightElement.highLight(element, driver);
 		return element;
 	}
@@ -42,8 +55,7 @@ public class Page {
 	}
 	
 	public String getText(By elementBy) {
-		wait.until(ExpectedConditions.visibilityOfElementLocated(elementBy));
-		return getText(driver.findElement(elementBy));
+		return getText(find(elementBy));
 	}
 	
 	public void enterText(WebElement element, String text) {
@@ -54,8 +66,7 @@ public class Page {
 	}
 	
 	public void enterText(By elementBy, String text) {
-		wait.until(ExpectedConditions.visibilityOfElementLocated(elementBy));
-	    enterText(driver.findElement(elementBy), text);
+	    enterText(find(elementBy), text);
 	}
 	
 	public void click(WebElement element) {
@@ -65,8 +76,7 @@ public class Page {
 	}
 	
 	public void click(By elementBy) {
-		wait.until(ExpectedConditions.visibilityOfElementLocated(elementBy));
-		click(driver.findElement(elementBy));
+		click(find(elementBy));
 	}
 	
 	public void submit(WebElement element) {
@@ -76,8 +86,7 @@ public class Page {
 	}
 	
 	public void submit(By elementBy) {
-		wait.until(ExpectedConditions.visibilityOfElementLocated(elementBy));
-		submit(driver.findElement(elementBy));
+		submit(find(elementBy));
 	}
 	
 	public void scrollToElement(WebElement element) {
@@ -86,11 +95,19 @@ public class Page {
 	}
 	
 	public void scrollToElement(By elementBy) {
-		wait.until(ExpectedConditions.visibilityOfElementLocated(elementBy));
-		scrollToElement(driver.findElement(elementBy));
+		scrollToElement(find(elementBy));
 	}
-
-	public WebDriver getDriver() {
-		return driver;
+	
+	public int getNumber(By element) {
+		return getNumber(find(element));
 	}
+	
+	public int getNumber(WebElement element) {	
+		String num = getText(element).replaceAll("[^0-9]", "");
+		if (num.isEmpty()) {
+			return 0;
+		}
+		return Integer.parseInt(num);
+	}
+	
 }
