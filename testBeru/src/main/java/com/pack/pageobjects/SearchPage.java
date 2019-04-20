@@ -9,76 +9,100 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class SearchPage extends Page {
-	
+	// Product search input.
 	private By searchInput = By.cssSelector("input#header-search");
+	// Search button.
 	private By searchBtn = By.cssSelector("form.header2__search button");	
-	
-	private By minPriceBy = By.cssSelector("input#glpricefrom");
-	private By maxPriceBy = By.cssSelector("input#glpriceto");
-	
-	private By resultMessage = By.xpath("//div[contains(text(),'Найдено')]");
-	
+	// Minimum price input.
+	private By minPriceInputBy = By.cssSelector("input#glpricefrom");
+	// Maximum price input.
+	private By maxPriceInputBy = By.cssSelector("input#glpriceto");
+	// Div element of product. 
 	private By productsBy = By.cssSelector("div.n-snippet-list div.grid-snippet");
-	private By buyProduct = By.xpath("//span[text()='В корзину']");
-	private By priceBy = By.cssSelector("span._1u3j_pk1db.n2qB2SKKgz.AJD1X1j5bE span");
+	// Button 'В корзину'.
+	private By buyProductBtn = By.tagName("button");
+	// Product price.
+	private By priceBy = By.cssSelector("span._1u3j_pk1db span");
+	// Button 'Перейти в корзину'.
 	private By productLinkBy = By.xpath("//span[text()='Перейти в корзину']");
+	// Button 'Вперёд'
+	private By forwardBtnBy = By.cssSelector("a.n-pager__button-next");
+	// Loader
+	private By loaderBy = By.className("preloadable__preloader_visibility_visible");
 	
-	private double min;
-	private double max;
+	// Minimum price value.
+	private int min;
+	// Maximum price value.
+	private int max;
+	// List of products.
 	private List<WebElement> products;
-	
 	
 	public SearchPage(WebDriver driver, WebDriverWait wait) {
 		super(driver, wait);
 		max = 0;
-		min = 1000000;
+		min = Integer.MAX_VALUE;
 	}
 	
+	// Search of product.
 	public void searchProduct(String product) {
-		this.enterText(searchInput, product);
-		this.click(searchBtn);
+		enterText(searchInput, product);
+		click(searchBtn);
 	}
 	
-	public void setMinPrice(String price) {
-		this.enterText(minPriceBy, price);
-		min = Double.parseDouble(price);
+	// Setter of minimum price.
+	public void setMinPrice(int price) {
+		enterText(minPriceInputBy, Integer.toString(price));
+		min = price;
 	}
 	
-	public void setMaxPrice(String price) {
-		this.enterText(maxPriceBy, price);
-		max = Double.parseDouble(price);
+	// Setter of maximum price.
+	public void setMaxPrice(int price) {
+		enterText(maxPriceInputBy, Integer.toString(price));
+		max = price;
 	}
 	
-	public boolean checkPrices() {
-		wait.until(ExpectedConditions.visibilityOfElementLocated(resultMessage));		
-		products = driver.findElements(productsBy);
-		for (WebElement element : products) {
-			String priceStr = element.findElement(priceBy).getText().replaceAll("\\s","");
-			double price = Double.parseDouble(priceStr);
-			if ((price > max) || (price < min)) {
-				return false;
+	// Products prices check.
+	public boolean checkPrices() {			
+		do {				
+			wait.until(ExpectedConditions.visibilityOfElementLocated(loaderBy));
+			wait.until(ExpectedConditions.invisibilityOfElementLocated(loaderBy));
+			
+			products = driver.findElements(productsBy);
+			for (WebElement element : products) {
+				double price = Double.parseDouble(element.findElement(priceBy)
+						.getText().replaceAll("\\s",""));
+				
+				System.out.println("price: " + price);
+				if ((price > max) || (price < min)) {
+					return false;
+				}
 			}
-		}
+			
+			List<WebElement> nextButton = driver.findElements(forwardBtnBy);
+			if (nextButton.isEmpty()) {
+				break;
+			}
+			click(nextButton.get(0));
+			
+		} while(true);
+		
 		return true;
 	}
 	
-	public boolean buyProduct() {			
-		if (products.isEmpty())
+	// Buy product method.
+	public boolean buyProduct() {	
+		if (products.isEmpty()) {
 			return false;
+		}	
+		int i = products.size() == 1 ? 0 : (products.size() - 2);		
 		
-		int i = products.size() - 2;			
-		if (i < 0) {
-			i = 0;
-		}
-		
-		WebElement buyBtn = products.get(i).findElement(buyProduct);		
-	    scrollToElement(buyBtn);
-		wait.until(ExpectedConditions.elementToBeClickable(buyBtn));
-		buyBtn.click();
-		wait.until(ExpectedConditions.elementToBeClickable(productLinkBy));
-		driver.findElement(productLinkBy).click();
-		
+		// Put product in basket.
+		wait.until(ExpectedConditions.visibilityOfElementLocated(buyProductBtn));
+		WebElement buyBtn = products.get(i).findElement(buyProductBtn);
+		scrollToElement(products.get(i));
+		click(buyBtn);
+		// Go to basket.
+		click(productLinkBy);
 		return true;
 	}
-
 }
