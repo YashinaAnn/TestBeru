@@ -8,10 +8,10 @@
 	<parameter name="minPrice" value="999" />
 	<parameter name="maxPrice" value="1999" />
 	<parameter name="price" value="2999" />
-	  <classes> 
-	    <class name="com.pack.tests.SignInTest"/> 
-	    <class name="com.pack.tests.NewCityTest"/> 
-		<class name="com.pack.tests.BuyProductTest"/> 
+	  <classes>
+	  	<class name="com.pack.tests.SignInTest"/>
+	  	<class name="com.pack.tests.NewCityTest"/>
+	  	<class name="com.pack.tests.BuyProductTest"/> 
 	  </classes>
 	</test>
   </suite>
