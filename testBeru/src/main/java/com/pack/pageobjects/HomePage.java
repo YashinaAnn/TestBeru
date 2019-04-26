@@ -49,7 +49,7 @@ public class HomePage extends Page {
 	// Get user login after authorization.
 	public String getUserLogin() {
 		Actions action = new Actions(driver);
-		action.moveToElement(findAndHighLight(signInBtn)).perform();
+		action.moveToElement(find(signInBtn)).perform();
 		return getText(loginBy);
 	}
 	

@@ -1,24 +1,23 @@
 package com.pack.tests;
 
-import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
+import org.testng.Assert;
 
 import com.pack.pageobjects.ProductPage;
 import com.pack.pageobjects.SearchPage;
+import com.pack.utils.Constants;
 
 import io.qameta.allure.Step;
-import junit.framework.Assert;
 
 public class BuyProductTest extends BaseTest {
+	
 	@Test
-	@Parameters({"product", "minPrice", "maxPrice", "price"})
-	public void buyProductTest(String product, int minPrice, 
-			int maxPrice, int price) {
+	public void buyProductTest() {
 				
 		SearchPage searchPage = new SearchPage(driver, wait);
 		searchPage.closeWindow();
 		
-		checkPrices(searchPage, product, minPrice, maxPrice);
+		checkPrices(searchPage);
 		buyProduct(searchPage);
 				
 		ProductPage productPage = new ProductPage(driver, wait);
@@ -26,7 +25,7 @@ public class BuyProductTest extends BaseTest {
 
 		System.out.println(String.format("Before free delivery: %s", 
 				productPage.beforeFreeDelivery()));	
-		boolean isEnough = productPage.addProduct(price);
+		boolean isEnough = productPage.addProduct(Constants.PRICE);
 		driver.navigate().refresh();	
 		if (isEnough) {
 			isFreeDelivery(productPage);
@@ -34,31 +33,29 @@ public class BuyProductTest extends BaseTest {
 		checkProductPrice(productPage);
 	}
 	
-	@Step
-	public void checkPrices(SearchPage searchPage, String product, 
-			int minPrice, int maxPrice) {
-		searchPage.searchProduct(product);
-		searchPage.setMinPrice(minPrice);
-		searchPage.setMaxPrice(maxPrice);
-		Assert.assertTrue("Prices do not match", searchPage.checkPrices());
+	@Step("Check that the prices of products in the selected range")
+	public void checkPrices(SearchPage searchPage) {
+		searchPage.searchProduct(Constants.PRODUCT);
+		searchPage.setMinPrice(Constants.MIN_PRICE);
+		searchPage.setMaxPrice(Constants.MAX_PRICE);
+		Assert.assertTrue(searchPage.checkPrices(), "Prices do not match");
 	}
 	
-	@Step
+	@Step("Put product in the basket")
 	public void buyProduct(SearchPage searchPage) {
-		Assert.assertTrue("Product list is empty", searchPage.buyProduct());
+		Assert.assertTrue(searchPage.buyProduct(), "Product list is empty");
 	}
 	
-	@Step
+	@Step("Сheck that the total product price is equal to the sum of the product price with discount and delivery")
 	public void checkProductPrice(ProductPage productPage) {
-		Assert.assertTrue("The total price is not equal to the sum of " 
-		                  + "the delivery price and product price", 
-		                  productPage.correctPrice());
+		Assert.assertTrue(productPage.correctPrice(), 
+				"The total price is not equal to the sum of " 
+				+ "the delivery price and product price");
 	}
 	
-	@Step
+	@Step("Check delivery is free")
 	public void isFreeDelivery(ProductPage productPage){
-		Assert.assertTrue("Delivery is not free", 
-				productPage.isFreeDelivery());
+		Assert.assertTrue(productPage.isFreeDelivery(), "Delivery is not free");
 	}
 }
 

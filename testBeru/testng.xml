@@ -1,17 +1,10 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
   <suite name="Beru.ru tests">
 	<test name="Tests">
-	<parameter name="userLogin" value="testBeruRu@yandex.ru" />
-	<parameter name="userPassword" value="kulikandlake" />
-	<parameter name="city" value="Хвалынск" />
-	<parameter name="product" value="Электрические зубные щетки" />
-	<parameter name="minPrice" value="999" />
-	<parameter name="maxPrice" value="1999" />
-	<parameter name="price" value="2999" />
-	  <classes>
-	  	<class name="com.pack.tests.SignInTest"/>
-	  	<class name="com.pack.tests.NewCityTest"/>
-	  	<class name="com.pack.tests.BuyProductTest"/> 
-	  </classes>
+		<classes>
+	  		<class name="com.pack.tests.SignInTest"/>
+	  		<class name="com.pack.tests.NewCityTest"/>
+	  		<class name="com.pack.tests.BuyProductTest"/> 
+		 </classes>
 	</test>
   </suite>
