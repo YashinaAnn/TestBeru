@@ -3,10 +3,15 @@ package com.pack.pageobjects;
 import java.util.List;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
+
+import com.pack.utils.Constants;
+
+import io.qameta.allure.Step;
 
 public class SearchPage extends Page {
 	// Product search input.
@@ -37,7 +42,7 @@ public class SearchPage extends Page {
 	// List of products.
 	private List<WebElement> products;
 	
-	public SearchPage(WebDriver driver, WebDriverWait wait) {
+	public SearchPage(EventFiringWebDriver driver, WebDriverWait wait) {
 		super(driver, wait);
 		max = 0;
 		min = Integer.MAX_VALUE;
@@ -104,5 +109,18 @@ public class SearchPage extends Page {
 		// Go to basket.
 		click(productLinkBy);
 		return true;
+	}
+	
+	@Step("Check that the prices of products in the selected range")
+	public void checkPricesStep() {
+		searchProduct(Constants.PRODUCT);
+		setMinPrice(Constants.MIN_PRICE);
+		setMaxPrice(Constants.MAX_PRICE);
+		Assert.assertTrue(checkPrices(), "Prices do not match");
+	}
+	
+	@Step("Put product in the basket")
+	public void buyProductStep() {
+		Assert.assertTrue(buyProduct(), "Product list is empty");
 	}
 }

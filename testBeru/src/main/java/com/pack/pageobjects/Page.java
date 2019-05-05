@@ -2,26 +2,25 @@ package com.pack.pageobjects;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.pack.utils.HighlightElement;
 
 public class Page {
 	
-	protected WebDriver driver;
-	protected WebDriverWait wait;
+	protected static EventFiringWebDriver driver;
+	protected static WebDriverWait wait;
 	
 	private By cancelBy = By.xpath("//div[@class='modal__cell']/div/div");
 	
-	public Page(WebDriver driver, WebDriverWait wait) {
-		this.driver = driver;
-		this.wait = wait;
+	public Page(EventFiringWebDriver driver, WebDriverWait wait) {
+		Page.driver = driver;
+		Page.wait = wait;
 	}
 	
-	public WebDriver getDriver() {
+	public static EventFiringWebDriver getDriver() {
 		return driver;
 	}
 	
@@ -44,13 +43,11 @@ public class Page {
 	
 	public WebElement findAndHighLight(By elementBy) {
 		WebElement element = find(elementBy);
-		HighlightElement.highLight(element, driver);
 		return element;
 	}
 	
 	public String getText(WebElement element) {
 		wait.until(ExpectedConditions.visibilityOf(element));
-		HighlightElement.highLight(element, driver);
 		return element.getText();
 	}
 	
@@ -62,7 +59,6 @@ public class Page {
 		wait.until(ExpectedConditions.visibilityOf(element));
 	    element.clear();
 	    element.sendKeys(text);
-		HighlightElement.highLight(element, driver);     
 	}
 	
 	public void enterText(By elementBy, String text) {
@@ -71,7 +67,6 @@ public class Page {
 	
 	public void click(WebElement element) {
 		wait.until(ExpectedConditions.elementToBeClickable(element));
-		HighlightElement.highLight(element, driver);
 		element.click();
 	}
 	
@@ -81,7 +76,6 @@ public class Page {
 	
 	public void submit(WebElement element) {
 		wait.until(ExpectedConditions.elementToBeClickable(element));
-		HighlightElement.highLight(element, driver);
 		element.submit();
 	}
 	

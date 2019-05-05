@@ -1,7 +1,7 @@
 package com.pack.pageobjects;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class SignInPage extends Page {
@@ -14,7 +14,7 @@ public class SignInPage extends Page {
 	private By submitBy = By.className("button2_type_submit");
 	private By inputBy = By.cssSelector("div.passp-form-field__input input");
 	
-	public SignInPage(WebDriver driver, WebDriverWait wait) {
+	public SignInPage(EventFiringWebDriver driver, WebDriverWait wait) {
 		super(driver, wait);
 	}
 	

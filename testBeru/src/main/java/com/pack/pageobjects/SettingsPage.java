@@ -3,14 +3,14 @@ package com.pack.pageobjects;
 import java.util.ArrayList;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class SettingsPage extends Page {
 	
 	private By city = By.xpath("//h2[contains(text(),'Ваш город ')]/span/span");
 	
-	public SettingsPage(WebDriver driver, WebDriverWait wait) {
+	public SettingsPage(EventFiringWebDriver driver, WebDriverWait wait) {
 		super(driver, wait);
 	}
 	

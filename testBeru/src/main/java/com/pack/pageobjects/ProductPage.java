@@ -5,8 +5,12 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
+
+import io.qameta.allure.Step;
 
 public class ProductPage extends Page {
 	
@@ -32,11 +36,12 @@ public class ProductPage extends Page {
 	// Total product price with delivery.
 	private double totalPrice;
 	
-	public ProductPage(WebDriver driver, WebDriverWait wait){
+	public ProductPage(EventFiringWebDriver driver, WebDriverWait wait){
 		super(driver, wait);
 	}	
 	
-	public boolean correctPrice() {	
+	@Step("Сheck that the total product price is equal to the sum of the product price with discount and delivery")
+	public void checkProductPrice() {	
 		// Product price.
 		productPrice = getNumber(productPriceBy);
 		System.out.println(String.format("Product price: %s", productPrice));
@@ -53,7 +58,11 @@ public class ProductPage extends Page {
 		// Total price.
 		totalPrice = getNumber(priceBy);
 		System.out.println(String.format("Total price: %s", totalPrice));		
-		return (totalPrice == (delivery + productPrice));
+
+		boolean priceCorrect = (totalPrice == (delivery + productPrice));
+		Assert.assertTrue(priceCorrect, 
+				"The total price is not equal to the sum of " 
+				+ "the delivery price and product price");
 	}
 	
 	public boolean addProduct(int price) {
@@ -67,11 +76,14 @@ public class ProductPage extends Page {
 		return (count + 1) == getNumber(inBasketBy);
 	}
 	
-	public boolean isFreeDelivery() {
-		return getText(deliveryPriceBy).contains("бесплатно");	
+	@Step("Check delivery is free")
+	public void isFreeDelivery() {
+		boolean isFree = getText(deliveryPriceBy).contains("бесплатно");	
+		Assert.assertTrue(isFree, "Delivery is not free");
 	}
 	
 	public int beforeFreeDelivery() {
 		return getNumber(freeDeliveryBy);	
 	}
+	
 }
