@@ -6,7 +6,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
-
 import com.pack.pageobjects.HomePage;
 import com.pack.utils.*;
 import com.pack.utils.listeners.EventListener;

@@ -1,10 +1,10 @@
 package com.pack.pageobjects;
 
 import java.util.ArrayList;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
 
 public class SettingsPage extends Page {
 	

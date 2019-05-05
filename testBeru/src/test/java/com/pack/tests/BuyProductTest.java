@@ -1,11 +1,9 @@
 package com.pack.tests;
 
 import org.testng.annotations.Test;
-
 import com.pack.pageobjects.ProductPage;
 import com.pack.pageobjects.SearchPage;
 import com.pack.utils.Constants;
-
 import io.qameta.allure.Description;
 
 

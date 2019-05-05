@@ -1,10 +1,9 @@
 package com.pack.tests;
 
 import org.testng.annotations.Test;
-
 import com.pack.pageobjects.HomePage;
-
 import io.qameta.allure.Description;
+
 
 public class SignInTest extends BaseTest {
 	
