@@ -114,9 +114,4 @@ public class HomePage extends Page {
 		Assert.assertEquals(getCity().trim(), city, "City doesn't correct");	
 	}
 	
-	@Step("Check that the city on the settings page matches the city on the home page")
-	public void checkCityMatch(String city) {			
-		Assert.assertEquals(changeSettings().getCity().trim(), city, "Cities do not match");
-	}	
-	
 }
