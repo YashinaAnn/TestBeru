@@ -19,7 +19,8 @@ public class NewCityTest extends BaseTest {
 	}
 	
 	@Description("Test city change")
-	@Test(dataProvider = "city-data-provider", dependsOnGroups = {"signInTest"})
+	@Test(description="Test city change", dataProvider = "city-data-provider", 
+		dependsOnGroups = {"signInTest"})
 	public void changeCityTest(String city) {			
 		HomePage homePage = new HomePage(driver, wait);
 		homePage.closeWindow();

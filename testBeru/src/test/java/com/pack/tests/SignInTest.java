@@ -8,7 +8,7 @@ import io.qameta.allure.Description;
 public class SignInTest extends BaseTest {
 	
 	@Description("Test signin functionality")
-	@Test(groups = {"signInTest"})
+	@Test(description="Test signin functionality", groups = {"signInTest"})
 	public void signInTest() {			
 		HomePage homePage = new HomePage(driver, wait);
 		homePage.closeWindow();	

@@ -4,6 +4,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import io.qameta.allure.Step;
+
 
 public class SignInPage extends Page {
 	
@@ -19,13 +21,23 @@ public class SignInPage extends Page {
 		super(driver, wait);
 	}
 	
+	@Step("Enter login")
+	public void enterLogin(String userLogin) {
+		enterText(loginBy, userLogin);
+		click(submitBy);
+	}
+	
+	@Step("Enter password")
+	public void enterPassword(String userPassword) {
+		enterText(passwordBy, userPassword);
+		click(submitBy);
+	}	
+	
 	public void signIn(String userLogin, String userPassword) {	
 		String id = find(inputBy).getAttribute("id");
 		if (id.equals(loginId)) {
-			enterText(loginBy, userLogin);
-			click(submitBy);
+			enterLogin(userLogin);
 		}	
-		enterText(passwordBy, userPassword);
-		click(submitBy);
+		enterPassword(userPassword);
 	}
 }

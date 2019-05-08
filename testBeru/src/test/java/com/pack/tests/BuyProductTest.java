@@ -10,7 +10,7 @@ import io.qameta.allure.Description;
 public class BuyProductTest extends BaseTest {
 	
 	@Description("Test buy product")
-	@Test
+	@Test(description="Test buy product")
 	public void buyProductTest() {
 				
 		SearchPage searchPage = new SearchPage(driver, wait);
